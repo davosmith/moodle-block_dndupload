@@ -94,7 +94,7 @@ M.blocks_dndupload = {
 	}
 	var sectionnumber = parseInt(sectionid[1]);
 
-	var files = event.dataTransfer.files;
+	var files = e.dataTransfer.files;
 	for (var i=0, f; f=files[i]; i++) {
 	    this.uploadfile(f, sectionnumber);
 	}

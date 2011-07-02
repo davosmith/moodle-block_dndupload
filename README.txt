@@ -19,7 +19,7 @@ Make sure you are not trying to install this on a live production server - it is
 3. Upload the files you unzipped to this new folder on your server
 4. Login as administrator and click on 'Notifications'
 5. Add the block to a course in the usual way
-6. Turn editing on (in the usual way)
+6. Turn editing on (in the usual way) - the block does not show if editing is off
 7. Select a few files from your desktop and drag them onto a course section
 
 ==Contact==
