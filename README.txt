@@ -22,6 +22,14 @@ Make sure you are not trying to install this on a live production server - it is
 6. Turn editing on (in the usual way) - the block does not show if editing is off
 7. Select a few files from your desktop and drag them onto a course section
 
+==Known issues==
+
+* Does not work in all browsers
+* Need to refresh the page before you can edit the uploaded items (fixable, but a bit of work, so I've concentrated on proving the concept, for the moment)
+* Larger files (within the course limit) can sometimes fail to upload
+* Files are probably not checked properly on the server (security risk)
+* No easy way to delete all the files, if you accidentally upload too many files
+
 ==Contact==
 
 Any problems / questions please contact:
