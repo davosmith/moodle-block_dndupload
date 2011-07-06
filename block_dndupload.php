@@ -49,6 +49,7 @@ class block_dndupload extends block_base {
                           'name' => 'block_dndupload',
                           'fullpath' => new moodle_url('/blocks/dndupload/dndupload.js'),
                           'strings' => array(
+                                             array('addhere', 'block_dndupload'),
                                              array('dndworking', 'block_dndupload'),
                                              array('filetoolarge', 'block_dndupload'),
                                              array('nofilereader', 'block_dndupload')
@@ -60,6 +61,7 @@ class block_dndupload extends block_base {
                       $COURSE->id,
                       $OUTPUT->pix_url('i/ajaxloader').'',
                       get_max_upload_file_size($CFG->maxbytes, $COURSE->maxbytes),
+                      $OUTPUT->pix_url('t/addfile').'',
                       );
         $PAGE->requires->js_init_call('M.blocks_dndupload.init', $vars, true, $jsmodule);
 

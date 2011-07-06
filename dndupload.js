@@ -4,8 +4,11 @@ M.blocks_dndupload = {
     loadingimg: null,
     courseid: null,
     maxsize: null,
+    addimg: null,
+    entercount: 0, // Nasty hack to distinguish between dragenter(first entry), dragenter+dragleave(moving between child elements) and dragleave (leaving element)
+    currentsection: null,
 
-    init: function(Y, sesskey, serverurl, courseid, loadingimg, maxsize) {
+    init: function(Y, sesskey, serverurl, courseid, loadingimg, maxsize, addimg) {
 	if (!this.hasRequiredFunctionality()) {
 	    document.getElementById('dndupload-status').innerHTML = M.util.get_string('nofilereader', 'block_dndupload');
 	    return;
@@ -18,6 +21,7 @@ M.blocks_dndupload = {
 	this.courseid = courseid;
 	this.loadingimg = loadingimg;
 	this.maxsize = maxsize;
+	this.addimg = addimg;
 
 	var els = document.getElementsByTagName('li');
 	var self = this;
@@ -51,17 +55,41 @@ M.blocks_dndupload = {
 	while (el.className.search('section') < 0
 	       || el.className.search('main') < 0) {
 	    el = el.parentNode;
+	    if (!el) {
+		return null;
+	    }
 	}
 	return el;
+    },
+
+    draghasfiles: function(e) {
+	for (var i=0; i<e.dataTransfer.types.length; i++) {
+	    if (e.dataTransfer.types[i] == 'Files') {
+		return true;
+	    }
+	}
+
+	return false;
     },
 
     dragenter: function(e) {
 	e.stopPropagation();
 	e.preventDefault();
-	var section = this.getsection(e.target);
-	//section = e.target;
-	if (section.className.search('dndupload-dropready') < 0) {
-	    section.className += ' dndupload-dropready';
+
+	if (this.currentsection && this.currentsection != e.currentTarget) {
+	    this.currentsection = e.currentTarget;
+	    this.entercount = 1;
+	} else {
+	    this.entercount++;
+	    if (this.entercount > 2) {
+		this.entercount = 2;
+		return;
+	    }
+	}
+
+	if (this.draghasfiles(e)) {
+	    var section = e.currentTarget;
+	    this.addpreviewelement(section);
 	}
 	return false;
     },
@@ -69,9 +97,15 @@ M.blocks_dndupload = {
     dragleave: function(e) {
 	e.stopPropagation();
 	e.preventDefault();
-	var section = this.getsection(e.target);
-	//section = e.target;
-	section.className = section.className.replace(' dndupload-dropready','');
+
+	this.entercount--;
+	if (this.entercount == 1) {
+	    return;
+	}
+	this.entercount = 0;
+	this.currentsection = null;
+
+	this.removepreviewelement();
 	return false;
     },
 
@@ -85,9 +119,13 @@ M.blocks_dndupload = {
 	e.stopPropagation();
 	e.preventDefault();
 
-	var section = this.getsection(e.target);
-	section.className = section.className.replace(' dndupload-dropready', '');
+	this.removepreviewelement();
 
+	if (!this.draghasfiles(e)) {
+	    return false;
+	}
+
+	var section = e.currentTarget;
 	var sectionid = section.id.split('-');
 	if (sectionid.length < 2 || sectionid[0] != 'section') {
 	    return false;
@@ -96,15 +134,14 @@ M.blocks_dndupload = {
 
 	var files = e.dataTransfer.files;
 	for (var i=0, f; f=files[i]; i++) {
-	    this.uploadfile(f, sectionnumber);
+	    this.uploadfile(f, section, sectionnumber);
 	}
 
 	return false;
     },
 
-    addresourceelement: function(file, sectionnumber) {
-	var sectionel = document.getElementById('section-'+sectionnumber);
-	var uls = sectionel.getElementsByTagName('ul');
+    getmodselement: function(section) {
+	var uls = section.getElementsByTagName('ul');
 
 	// Find the 'ul' containing the list of mods
 	var modsel = null;
@@ -122,6 +159,12 @@ M.blocks_dndupload = {
 	    var brel = contentel.lastChild;
 	    contentel.insertBefore(modsel, brel);
 	}
+
+	return modsel;
+    },
+
+    addresourceelement: function(file, section) {
+	var modsel = this.getmodselement(section);
 
 	var resel = {
 	    parent: modsel,
@@ -156,6 +199,47 @@ M.blocks_dndupload = {
 	return resel;
     },
 
+    removepreviewelement: function() {
+	var el = document.getElementById('dndupload-preview');
+	if (el) {
+	    var parent = el.parentNode;
+	    if (parent) {
+		parent.removeChild(el);
+	    }
+	}
+    },
+
+    addpreviewelement: function(section) {
+	this.removepreviewelement();
+
+	var modsel = this.getmodselement(section);
+	var preview = {
+	    li: document.createElement('li'),
+	    div: document.createElement('div'),
+	    icon: document.createElement('img'),
+	    namespan: document.createElement('span')
+	};
+
+	preview.li.className = 'dndupload-preview activity resource modtype_resource';
+	preview.li.id = 'dndupload-preview';
+
+	preview.div.className = 'mod-indent';
+	preview.li.appendChild(preview.div);
+
+	preview.icon.src = this.addimg;
+	preview.icon.height = 16;
+	preview.icon.width = 16;
+	preview.div.appendChild(preview.icon);
+
+	preview.div.appendChild(document.createTextNode(' '));
+
+	preview.namespan.className = 'instancename';
+	preview.namespan.innerHTML = M.util.get_string('addhere', 'block_dndupload');
+	preview.div.appendChild(preview.namespan);
+
+	modsel.appendChild(preview.li);
+    },
+
     addpostfield: function(boundary, name, value, filename, filetype) {
 	var rtn;
 	rtn = '--'+boundary+'\n';
@@ -171,7 +255,7 @@ M.blocks_dndupload = {
 	return rtn;
     },
 
-    uploadfile: function(file, sectionnumber) {
+    uploadfile: function(file, section, sectionnumber) {
 	var xhr = new XMLHttpRequest();
 	var reader = new FileReader();
 
@@ -181,7 +265,7 @@ M.blocks_dndupload = {
 	}
 
 	// Add the file to the display
-	var resel = this.addresourceelement(file, sectionnumber);
+	var resel = this.addresourceelement(file, section);
 
 	// Wait for the file to finish sending to the server
 	xhr.addEventListener('load', function(e) {

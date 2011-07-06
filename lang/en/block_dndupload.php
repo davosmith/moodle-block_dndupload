@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+$string['addhere'] = 'Add file(s) here';
 $string['blockname'] = 'Drag and drop upload';
 $string['dndworking'] = 'Drag and drop files from your desktop onto course sections to upload them';
 $string['filetoolarge'] = 'is too large to upload';
