@@ -8,8 +8,6 @@ It has only been tested with the 'Topic' course format.
 
 ==Installation==
 
-Make sure you are not trying to install this on a live production server - it is a proof of concept ONLY.
-
 1. Unzip the files to a suitable location on your local machine
 2. Create a new folder on the server <moodleroot>/blocks/dndupload
 3. Upload the files you unzipped to this new folder on your server
