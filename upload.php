@@ -10,6 +10,12 @@ require_once($CFG->dirroot.'/course/lib.php');
 $courseid = required_param('course', PARAM_INT);
 $section = required_param('section', PARAM_INT);
 
+define("DND_ERROR_BAD_COURSE", 1);
+define("DND_ERROR_NO_PERMISSION", 2);
+define("DND_ERROR_NO_FILES", 3);
+define("DND_ERROR_INVALID_FILE", 4);
+define("DND_ERROR_INVALID_SESSKEY", 5);
+
 function dnd_send_error($errcode, $errmsg) {
     $resp = new stdClass;
     $resp->error = $errcode;
@@ -19,22 +25,22 @@ function dnd_send_error($errcode, $errmsg) {
 }
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    dnd_send_error(1, 'Course is misconfigured');
+    dnd_send_error(DND_ERROR_BAD_COURSE, 'Course is misconfigured');
 }
 
 require_login($course, false);
 $context = get_context_instance(CONTEXT_COURSE, $course->id);
 if (!has_capability('moodle/course:manageactivities', $context)) {
-    dnd_send_error(2, 'No permission to add resources');
+    dnd_send_error(DND_ERROR_NO_PERMISSION, 'No permission to add resources');
 }
 
 if (!confirm_sesskey()) {
-    dnd_send_error(5, 'Invalid sesskey');
+    dnd_send_error(DND_ERROR_INVALID_SESSKEY, 'Invalid sesskey');
 }
 
 // Extract the file data (and base64 decode it)
 if (!array_key_exists('uploadfile', $_FILES)) {
-    dnd_send_error(3, 'No files included');
+    dnd_send_error(DND_ERROR_NO_FILES, 'No files included');
 }
 $filedetails = $_FILES['uploadfile'];
 
@@ -49,7 +55,7 @@ if ($extn !== false) {
 $displayname = str_replace('_', ' ', $displayname);
 
 if (!is_uploaded_file($filesrc)) {
-    dnd_send_error(4, 'File not successfully uploaded');
+    dnd_send_error(DND_ERROR_INVALID_FILE, 'File not successfully uploaded');
 }
 
 $contents = file_get_contents($filesrc);
