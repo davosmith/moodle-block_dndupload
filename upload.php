@@ -1,7 +1,6 @@
 <?php
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-//require_once($CFG->libdir.'/formslib.php');
 require_once($CFG->libdir.'/resourcelib.php');
 require_once($CFG->dirroot.'/mod/resource/lib.php');
 require_once($CFG->dirroot.'/mod/resource/locallib.php');
@@ -15,6 +14,7 @@ define("DND_ERROR_NO_PERMISSION", 2);
 define("DND_ERROR_NO_FILES", 3);
 define("DND_ERROR_INVALID_FILE", 4);
 define("DND_ERROR_INVALID_SESSKEY", 5);
+define("DND_ERROR_INVALID_SECTION", 6);
 
 function dnd_send_error($errcode, $errmsg) {
     $resp = new stdClass;
@@ -27,6 +27,9 @@ function dnd_send_error($errcode, $errmsg) {
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     dnd_send_error(DND_ERROR_BAD_COURSE, 'Course is misconfigured');
 }
+if ($section < 0 || $section > $course->numsections) {
+    dnd_send_error(DND_ERROR_INVALID_SECTION, 'Invalid section: '+$section);
+}
 
 require_login($course, false);
 $context = get_context_instance(CONTEXT_COURSE, $course->id);
@@ -38,7 +41,7 @@ if (!confirm_sesskey()) {
     dnd_send_error(DND_ERROR_INVALID_SESSKEY, 'Invalid sesskey');
 }
 
-// Extract the file data (and base64 decode it)
+// Extract the file data
 if (!array_key_exists('uploadfile', $_FILES)) {
     dnd_send_error(DND_ERROR_NO_FILES, 'No files included');
 }
@@ -78,7 +81,7 @@ $data->files = false;
 // Create the course module
 $data->coursemodule = add_course_module($data);
 
-// Create the relevant files
+// Create the relevant file
 $fs = get_file_storage();
 $cmcontext = get_context_instance(CONTEXT_MODULE, $data->coursemodule);
 $fileinfo = array(
