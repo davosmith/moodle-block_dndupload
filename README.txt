@@ -2,12 +2,8 @@
 
 Once installed on a course, this block allows you to drag and drop files directly from your desktop onto a course and have them appear as resouces on that course.
 
-This is an EXPERIMENTAL PROOF OF CONCEPT block that should NOT be installed on a production system.
-It is not guarenteed to be secure (in fact, I can almost promise that it is unsecure).
-I cannot promise it will work on your site and it will certainly not work with all browsers.
-
 This block only works in Moodle 2.0 and above.
-It has been tested with Firefox 5, Chromium 14 and Chrome 12 (all running on Ubunutu 11.04). It has no chance of working in IE, so don't bother trying (it may star working with IE10 or later, depending on MS implementing some key features of HTML 5).
+It has been tested with Firefox 5, Chromium 14 and Chrome 12 (all running on Ubunutu 11.04). It has no chance of working in IE, so don't bother trying (it may start working with IE10 or later, depending on MS implementing some key features of HTML 5).
 It has only been tested with the 'Topic' course format.
 
 ==Installation==
@@ -24,11 +20,19 @@ Make sure you are not trying to install this on a live production server - it is
 
 ==Known issues==
 
-* Does not work in all browsers
+* Does not work in all browsers (IE)
 * Need to refresh the page before you can edit the uploaded items (fixable, but a bit of work, so I've concentrated on proving the concept, for the moment)
-* Larger files (within the course limit) can sometimes fail to upload
-* Files are probably not checked properly on the server (security risk)
 * No easy way to delete all the files, if you accidentally upload too many files
+
+==Thanks==
+
+Thanks to the following websites, that were invaluable in the creation of this block:
+http://www.html5rocks.com/
+http://www.thecssninja.com/
+http://developer.mozilla.org/
+(and, as always, http://docs.moodle.org/dev !)
+
+Special thanks to The University of St Andrews, for sharing some code to put some of the final polish on the operation of the block.
 
 ==Contact==
 
