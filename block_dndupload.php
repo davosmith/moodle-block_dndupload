@@ -42,8 +42,7 @@ class block_dndupload extends block_base {
 
         $this->content = new stdClass;
         $this->content->footer = null;
-        $this->content->text = "If you are reading this on a live Moodle site, please tell your site administrator to remove the experimental 'Drag and drop upload' block<br/><br/>";
-        $this->content->text .= '<div id="dndupload-status"><noscript>'.get_string('noscript', 'block_dndupload').'</noscript></div>';
+        $this->content->text = '<div id="dndupload-status"><noscript>'.get_string('noscript', 'block_dndupload').'</noscript></div>';
 
         $jsmodule = array(
                           'name' => 'block_dndupload',
