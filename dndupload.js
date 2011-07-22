@@ -175,7 +175,9 @@ M.blocks_dndupload = {
 	    div: document.createElement('div'),
 	    a: document.createElement('a'),
 	    icon: document.createElement('img'),
-	    namespan: document.createElement('span')
+	    namespan: document.createElement('span'),
+	    progressouter: document.createElement('span'),
+	    progress: document.createElement('span')
 	};
 
 	resel.li.className = 'activity resource modtype_resource';
@@ -196,6 +198,14 @@ M.blocks_dndupload = {
 	resel.namespan.className = 'instancename';
 	resel.namespan.innerHTML = file.name;
 	resel.a.appendChild(resel.namespan);
+
+	resel.div.appendChild(document.createTextNode(' '));
+
+	resel.progressouter.className = 'dndupload-progress-outer';
+	resel.progress.className = 'dndupload-progress-inner';
+	resel.progress.innerHTML = '&nbsp;';
+	resel.progressouter.appendChild(resel.progress);
+	resel.div.appendChild(resel.progressouter);
 
 	modsel.appendChild(resel.li);
 
@@ -275,7 +285,10 @@ M.blocks_dndupload = {
 	}, false);
 
 	xhr.upload.addEventListener('progress', function(e) {
-	    //
+	    if (e.lengthComputable) {
+		var percentage = Math.round((e.loaded * 100) / e.total);
+		resel.progress.style.width = percentage + '%';
+	    }
 	}, false);
 
 	xhr.onreadystatechange = function() {
@@ -287,6 +300,7 @@ M.blocks_dndupload = {
 			    resel.icon.src = result.icon;
 			    resel.a.href = result.link;
 			    resel.namespan.innerHTML = result.filename;
+			    resel.div.removeChild(resel.progressouter);
 			} else {
 			    resel.parent.removeChild(resel.li);
 			    alert(result.error+': '+result.errormessage);
