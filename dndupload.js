@@ -33,6 +33,7 @@ M.blocks_dndupload = {
 	for (var i=0; i<els.length; i++) {
 	    if ((els[i].className.search('section') >= 0)
 		&& (els[i].className.search('main') >= 0)) {
+		this.addpreviewelement(els[i]);
 		els[i].addEventListener('dragenter', function(e) {
 		    self.dragenter(e);
 		}, false);
@@ -91,8 +92,10 @@ M.blocks_dndupload = {
 	e.stopPropagation();
 	e.preventDefault();
 
-	if (this.currentsection && this.currentsection != e.currentTarget) {
-	    this.currentsection = e.currentTarget;
+	var section = this.getsection(e.currentTarget);
+
+	if (this.currentsection && this.currentsection != section) {
+	    this.currentsection = section;
 	    this.entercount = 1;
 	} else {
 	    this.entercount++;
@@ -103,8 +106,7 @@ M.blocks_dndupload = {
 	}
 
 	if (this.draghasfiles(e)) {
-	    var section = e.currentTarget;
-	    this.addpreviewelement(section);
+	    this.showpreviewelement(section);
 	}
 	return false;
     },
@@ -120,7 +122,7 @@ M.blocks_dndupload = {
 	this.entercount = 0;
 	this.currentsection = null;
 
-	this.removepreviewelement();
+	this.hidepreviewelement();
 	return false;
     },
 
@@ -134,7 +136,7 @@ M.blocks_dndupload = {
 	e.stopPropagation();
 	e.preventDefault();
 
-	this.removepreviewelement();
+	this.hidepreviewelement();
 
 	if (!this.draghasfiles(e)) {
 	    return false;
@@ -219,24 +221,34 @@ M.blocks_dndupload = {
 	resel.progressouter.appendChild(resel.progress);
 	resel.div.appendChild(resel.progressouter);
 
-	modsel.appendChild(resel.li);
+	modsel.insertBefore(resel.li, modsel.lastChild); // Leave the 'preview element' at the bottom
 
 	return resel;
     },
 
-    removepreviewelement: function() {
-	var el = document.getElementById('dndupload-preview');
-	if (el) {
-	    var parent = el.parentNode;
-	    if (parent) {
-		parent.removeChild(el);
+    hidepreviewelement: function() {
+	var lis = document.getElementsByTagName('li');
+	for (var i=0; i<lis.length; i++) {
+	    if (lis[i].className.search('dndupload-preview') >= 0) {
+		if (lis[i].className.search('dndupload-hidden') < 0) {
+		    lis[i].className += ' dndupload-hidden';
+		}
+	    }
+	}
+    },
+
+    showpreviewelement: function(section) {
+	this.hidepreviewelement();
+	var lis = section.getElementsByTagName('li');
+	for (var i=0; i<lis.length; i++) {
+	    if (lis[i].className.search('dndupload-preview') >= 0) {
+		lis[i].className = lis[i].className.replace(' dndupload-hidden', '');
+		return;
 	    }
 	}
     },
 
     addpreviewelement: function(section) {
-	this.removepreviewelement();
-
 	var modsel = this.getmodselement(section);
 	var preview = {
 	    li: document.createElement('li'),
@@ -245,8 +257,7 @@ M.blocks_dndupload = {
 	    namespan: document.createElement('span')
 	};
 
-	preview.li.className = 'dndupload-preview activity resource modtype_resource';
-	preview.li.id = 'dndupload-preview';
+	preview.li.className = 'dndupload-preview activity resource modtype_resource dndupload-hidden';
 
 	preview.div.className = 'mod-indent';
 	preview.li.appendChild(preview.div);
