@@ -48,6 +48,9 @@ M.blocks_dndupload = {
 	if (!window.FileReader) {
 	    return false;
 	}
+	if (!window.FormData) {
+	    return false;
+	}
 	return true;
     },
 
@@ -257,7 +260,6 @@ M.blocks_dndupload = {
 
     uploadfile: function(file, section, sectionnumber) {
 	var xhr = new XMLHttpRequest();
-	var reader = new FileReader();
 
 	if (file.size > this.maxsize) {
 	    alert("'"+file.name+"' "+M.util.get_string('filetoolarge', 'block_dndupload'));
@@ -270,6 +272,10 @@ M.blocks_dndupload = {
 	// Wait for the file to finish sending to the server
 	xhr.addEventListener('load', function(e) {
 	    //debugmsg.innerHTML += 'File '+file.name+' sent';
+	}, false);
+
+	xhr.upload.addEventListener('progress', function(e) {
+	    //
 	}, false);
 
 	xhr.onreadystatechange = function() {
@@ -290,32 +296,14 @@ M.blocks_dndupload = {
 	    }
 	};
 
-	// Prepare the request to send to the server
-	var date = new Date();
-	var boundary = '----DNDUploadBoundary'+date.getTime();
+	var formData = new FormData();
+	formData.append('uploadfile[]', file);
+	formData.append('sesskey', this.sesskey);
+	formData.append('course', this.courseid);
+	formData.append('section', sectionnumber);
 
 	xhr.open("POST", this.serverurl+"/upload.php", true);
-	xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary='+boundary);
-
-	// When the file has been read into the browser
-	// send it to the server
-	var self = this;
-	reader.onload = function(e) {
-	    var result = e.target.result;
-	    result = result.split(',',2)[1]; // Remove the 'data' section from the start
-
-	    var data = '';
-	    data += self.addpostfield(boundary, 'sesskey', self.sesskey);
-	    data += self.addpostfield(boundary, 'course', self.courseid);
-	    data += self.addpostfield(boundary, 'section', sectionnumber);
-	    data += self.addpostfield(boundary, 'uploadfile[]', result, file.name, file.type);
-	    data += '--'+boundary+'--';
-
-	    xhr.send(data);
-	}
-
-	// Read the file into the browser
-	reader.readAsDataURL(file);
+	xhr.send(formData);
     }
 
 };

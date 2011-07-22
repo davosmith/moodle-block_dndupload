@@ -58,9 +58,6 @@ if (!is_uploaded_file($filesrc)) {
     dnd_send_error(DND_ERROR_INVALID_FILE, 'File not successfully uploaded');
 }
 
-$contents = file_get_contents($filesrc);
-$contents = base64_decode($contents);
-
 // Set up all the data for the resource
 $cw = get_course_section($section, $course->id);
 
@@ -92,7 +89,7 @@ $fileinfo = array(
                   'filepath' => '/',
                   'filename' => $filename
                   );
-$fs->create_file_from_string($fileinfo, $contents);
+$fs->create_file_from_pathname($fileinfo, $filesrc);
 
 // Create the resouce database entry
 unset($data->id);
