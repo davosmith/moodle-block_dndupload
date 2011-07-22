@@ -19,6 +19,7 @@ $string['addhere'] = 'Add file(s) here';
 $string['blockname'] = 'Drag and drop upload';
 $string['dndworking'] = 'Drag and drop files from your desktop onto course sections to upload them';
 $string['filetoolarge'] = 'is too large to upload';
+$string['noajax'] = 'AJAX course editing must be enabled for drag and drop upload to work';
 $string['nofilereader'] = 'Your browser does not support drag and drop upload of files';
 $string['noscript'] = 'Javascript must be enabled for drag and drop upload to work';
 $string['pluginname'] = 'Drag and drop upload';

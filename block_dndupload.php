@@ -51,7 +51,8 @@ class block_dndupload extends block_base {
                                              array('addhere', 'block_dndupload'),
                                              array('dndworking', 'block_dndupload'),
                                              array('filetoolarge', 'block_dndupload'),
-                                             array('nofilereader', 'block_dndupload')
+                                             array('nofilereader', 'block_dndupload'),
+                                             array('noajax', 'block_dndupload')
                                              )
                           );
         $vars = array(

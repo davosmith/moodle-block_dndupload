@@ -14,6 +14,11 @@ M.blocks_dndupload = {
 	    return;
 	}
 
+	if (!this.ajaxeditenabled()) {
+	    document.getElementById('dndupload-status').innerHTML = M.util.get_string('noajax', 'block_dndupload');
+	    return;
+	}
+
 	document.getElementById('dndupload-status').innerHTML = M.util.get_string('dndworking', 'block_dndupload');
 
 	this.sesskey = sesskey;
@@ -45,10 +50,17 @@ M.blocks_dndupload = {
     },
 
     hasRequiredFunctionality: function() {
-	if (!window.FileReader) {
+	if (typeof FileReader=="undefined") {
 	    return false;
 	}
-	if (!window.FormData) {
+	if (typeof FormData=="undefined") {
+	    return false;
+	}
+	return true;
+    },
+
+    ajaxeditenabled: function() {
+	if (typeof main=="undefined") {
 	    return false;
 	}
 	return true;
