@@ -270,6 +270,7 @@ M.blocks_dndupload = {
 
     uploadfile: function(file, section, sectionnumber) {
 	var xhr = new XMLHttpRequest();
+	var self = this;
 
 	if (file.size > this.maxsize) {
 	    alert("'"+file.name+"' "+M.util.get_string('filetoolarge', 'block_dndupload'));
@@ -301,6 +302,9 @@ M.blocks_dndupload = {
 			    resel.a.href = result.link;
 			    resel.namespan.innerHTML = result.filename;
 			    resel.div.removeChild(resel.progressouter);
+			    resel.li.id = result.elementid;
+			    resel.div.innerHTML += result.commands;
+			    self.addediting(result.elementid, sectionnumber);
 			} else {
 			    resel.parent.removeChild(resel.li);
 			    alert(result.error+': '+result.errormessage);
@@ -318,6 +322,15 @@ M.blocks_dndupload = {
 
 	xhr.open("POST", this.serverurl+"/upload.php", true);
 	xhr.send(formData);
+    },
+
+    addediting: function(elementid, sectionnumber) {
+	var section = main.sections[sectionnumber];
+	if (!section) {
+	    return;
+	}
+
+	section.resources[section.resources.length] = new resource_class(elementid, 'resources', null, section);
     }
 
 };

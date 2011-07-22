@@ -128,5 +128,10 @@ $resp->error = 0;
 $resp->icon = $OUTPUT->pix_url(file_extension_icon($filename)).'';
 $resp->filename = $displayname;
 $resp->link = new moodle_url('/mod/resource/view.php', array('id'=>$data->coursemodule)).'';
+$resp->elementid = 'module-'.$data->coursemodule;
+
+$data->id = $data->coursemodule;
+$data->groupmodelink = false; // Resources never have group modes
+$resp->commands = make_editing_buttons($data, true, true, 0, $section);
 
 echo json_encode($resp);

@@ -20,9 +20,9 @@ Make sure you are not trying to install this on a live production server - it is
 
 ==Known issues==
 
-* Does not work in all browsers (IE)
-* Need to refresh the page before you can edit the uploaded items (fixable, but a bit of work, so I've concentrated on proving the concept, for the moment)
-* No easy way to delete all the files, if you accidentally upload too many files
+* Does not work in all browsers (IE, older FF/Chrome)
+* No easy way to delete all the files, if you accidentally upload too many files (you have to delete them one-by-one)
+* Moving resources that you have just uploaded around has slight sorting issues with other files you have just uploaded (if it is a problem, refresh the page)
 
 ==Thanks==
 
