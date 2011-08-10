@@ -71,6 +71,8 @@ $data->module = $DB->get_field('modules', 'id', array('name'=>'resource'));
 $data->modulename = 'resource';
 $data->instance = 0;
 $data->name = $displayname;
+$data->intro = '<p>'.$displayname.'</p>';
+$data->introformat = FORMAT_HTML;
 $data->visible = $cw->visible;
 $data->groupmode = $course->groupmode;
 $data->groupingid = $course->defaultgroupingid;
