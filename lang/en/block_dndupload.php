@@ -1,6 +1,6 @@
 <?php
 
-// This file is part of the Realnames block for Moodle
+// This file is part of the Drag and drop upload block for Moodle
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
