@@ -22,7 +22,7 @@ class block_dndupload extends block_base {
     }
 
     function applicable_formats() {
-        return array('course' => true);
+        return array('course' => true, 'course-category' => false);
     }
 
     function user_can_addto($page) {
