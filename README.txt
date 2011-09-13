@@ -2,7 +2,9 @@
 
 Once installed on a course, this block allows you to drag and drop files directly from your desktop onto a course and have them appear as resouces on that course.
 
-This block only works in Moodle 2.0 and above.
+This block works with Moodle 1.9 and Moodle 2.x. (Although it has been more extensively tested with Moodle 2).
+This is the Moodle 2.x version.
+
 It has been tested with Firefox 5, Chromium 14 and Chrome 12 (all running on Ubunutu 11.04). It has no chance of working in IE, so don't bother trying (it may start working with IE10 or later, depending on MS implementing some key features of HTML 5).
 It has only been tested with the 'Topic' course format.
 
