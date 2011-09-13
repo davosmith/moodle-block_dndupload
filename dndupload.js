@@ -1,4 +1,4 @@
-M.blocks_dndupload = {
+blocks_dndupload = {
     sesskey: null,
     serverurl: null,
     loadingimg: null,
@@ -7,19 +7,34 @@ M.blocks_dndupload = {
     addimg: null,
     entercount: 0, // Nasty hack to distinguish between dragenter(first entry), dragenter+dragleave(moving between child elements) and dragleave (leaving element)
     currentsection: null,
+    langstrings: null,
 
-    init: function(Y, sesskey, serverurl, courseid, loadingimg, maxsize, addimg) {
+    get_string: function(str, mod) {
+	if (str in this.langstrings) {
+	    return this.langstrings[str];
+	}
+	return '[['+str+']]';
+    },
+
+    init_string: function(str, display) {
+	if (this.langstrings == null) {
+	    this.langstrings = new Array();
+	}
+	this.langstrings[str] = display;
+    },
+
+    init: function(sesskey, serverurl, courseid, loadingimg, maxsize, addimg) {
 	if (!this.hasRequiredFunctionality()) {
-	    document.getElementById('dndupload-status').innerHTML = M.util.get_string('nofilereader', 'block_dndupload');
+	    document.getElementById('dndupload-status').innerHTML = this.get_string('nofilereader', 'block_dndupload');
 	    return;
 	}
 
 	if (!this.ajaxeditenabled()) {
-	    document.getElementById('dndupload-status').innerHTML = M.util.get_string('noajax', 'block_dndupload');
+	    document.getElementById('dndupload-status').innerHTML = this.get_string('noajax', 'block_dndupload');
 	    return;
 	}
 
-	document.getElementById('dndupload-status').innerHTML = M.util.get_string('dndworking', 'block_dndupload');
+	document.getElementById('dndupload-status').innerHTML = this.get_string('dndworking', 'block_dndupload');
 
 	this.sesskey = sesskey;
 	this.serverurl = serverurl;
@@ -28,7 +43,7 @@ M.blocks_dndupload = {
 	this.maxsize = maxsize;
 	this.addimg = addimg;
 
-	var els = document.getElementsByTagName('li');
+	var els = document.getElementsByTagName('tr');
 	var self = this;
 	for (var i=0; i<els.length; i++) {
 	    if ((els[i].className.search('section') >= 0)
@@ -186,7 +201,6 @@ M.blocks_dndupload = {
 	var resel = {
 	    parent: modsel,
 	    li: document.createElement('li'),
-	    div: document.createElement('div'),
 	    a: document.createElement('a'),
 	    icon: document.createElement('img'),
 	    namespan: document.createElement('span'),
@@ -196,11 +210,8 @@ M.blocks_dndupload = {
 
 	resel.li.className = 'activity resource modtype_resource';
 
-	resel.div.className = 'mod-indent';
-	resel.li.appendChild(resel.div);
-
 	resel.a.href = '#';
-	resel.div.appendChild(resel.a);
+	resel.li.appendChild(resel.a);
 
 	resel.icon.src = this.loadingimg;
 	resel.icon.height = 16;
@@ -213,13 +224,13 @@ M.blocks_dndupload = {
 	resel.namespan.innerHTML = file.name;
 	resel.a.appendChild(resel.namespan);
 
-	resel.div.appendChild(document.createTextNode(' '));
+	resel.li.appendChild(document.createTextNode(' '));
 
 	resel.progressouter.className = 'dndupload-progress-outer';
 	resel.progress.className = 'dndupload-progress-inner';
 	resel.progress.innerHTML = '&nbsp;';
 	resel.progressouter.appendChild(resel.progress);
-	resel.div.appendChild(resel.progressouter);
+	resel.li.appendChild(resel.progressouter);
 
 	modsel.insertBefore(resel.li, modsel.lastChild); // Leave the 'preview element' at the bottom
 
@@ -270,7 +281,7 @@ M.blocks_dndupload = {
 	preview.div.appendChild(document.createTextNode(' '));
 
 	preview.namespan.className = 'instancename';
-	preview.namespan.innerHTML = M.util.get_string('addhere', 'block_dndupload');
+	preview.namespan.innerHTML = this.get_string('addhere', 'block_dndupload');
 	preview.div.appendChild(preview.namespan);
 
 	modsel.appendChild(preview.li);
@@ -296,7 +307,7 @@ M.blocks_dndupload = {
 	var self = this;
 
 	if (file.size > this.maxsize) {
-	    alert("'"+file.name+"' "+M.util.get_string('filetoolarge', 'block_dndupload'));
+	    alert("'"+file.name+"' "+this.get_string('filetoolarge', 'block_dndupload'));
 	    return;
 	}
 
@@ -324,9 +335,9 @@ M.blocks_dndupload = {
 			    resel.icon.src = result.icon;
 			    resel.a.href = result.link;
 			    resel.namespan.innerHTML = result.filename;
-			    resel.div.removeChild(resel.progressouter);
+			    resel.li.removeChild(resel.progressouter);
 			    resel.li.id = result.elementid;
-			    resel.div.innerHTML += result.commands;
+			    resel.li.innerHTML += result.commands;
 			    self.addediting(result.elementid, sectionnumber);
 			} else {
 			    resel.parent.removeChild(resel.li);

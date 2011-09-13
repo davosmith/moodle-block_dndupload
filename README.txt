@@ -2,9 +2,12 @@
 
 Once installed on a course, this block allows you to drag and drop files directly from your desktop onto a course and have them appear as resouces on that course.
 
-This block only works in Moodle 2.0 and above.
+This block works with Moodle 1.9 and Moodle 2.x.
+This is the Moodle 1.9 version.
 It has been tested with Firefox 5, Chromium 14 and Chrome 12 (all running on Ubunutu 11.04). It has no chance of working in IE, so don't bother trying (it may start working with IE10 or later, depending on MS implementing some key features of HTML 5).
 It has only been tested with the 'Topic' course format.
+
+Try selecting multiple file on your desktop and dragging them all onto the course at the same time.
 
 ==Installation==
 
@@ -21,6 +24,7 @@ It has only been tested with the 'Topic' course format.
 * Does not work in all browsers (IE, older FF/Chrome)
 * No easy way to delete all the files, if you accidentally upload too many files (you have to delete them one-by-one)
 * Moving resources that you have just uploaded around has slight sorting issues with other files you have just uploaded (if it is a problem, refresh the page)
+* NOTE: Deleting a resource will NOT delete the files you uploaded (they are all stored in a 'dndupload' subfolder within the course files). You will have to manually delete any files associated with a deleted resource. Note also that uploading the same file multiple times will result in multiple copies of the same file, with '_number' added onto the end (where 'number' is the next available number).
 
 ==Thanks==
 

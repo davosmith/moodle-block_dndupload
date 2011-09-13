@@ -1,9 +1,7 @@
 <?php
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once($CFG->libdir.'/resourcelib.php');
 require_once($CFG->dirroot.'/mod/resource/lib.php');
-require_once($CFG->dirroot.'/mod/resource/locallib.php');
 require_once($CFG->dirroot.'/course/lib.php');
 
 $courseid = required_param('course', PARAM_INT);
@@ -15,6 +13,7 @@ define("DND_ERROR_NO_FILES", 3);
 define("DND_ERROR_INVALID_FILE", 4);
 define("DND_ERROR_INVALID_SESSKEY", 5);
 define("DND_ERROR_INVALID_SECTION", 6);
+define("DND_ERROR_FILE_TOO_BIG", 7);
 
 function dnd_send_error($errcode, $errmsg) {
     $resp = new stdClass;
@@ -24,7 +23,7 @@ function dnd_send_error($errcode, $errmsg) {
     die();
 }
 
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
+if (!$course = get_record('course', 'id', $courseid)) {
     dnd_send_error(DND_ERROR_BAD_COURSE, 'Course is misconfigured');
 }
 if ($section < 0 || $section > $course->numsections) {
@@ -49,8 +48,10 @@ $filedetails = $_FILES['uploadfile'];
 
 $filename = $filedetails['name'][0];
 $filesrc = $filedetails['tmp_name'][0];
+$filesize = $filedetails['size'][0];
 
 $displayname = $filename;
+$filename = clean_filename($filename);
 $extn = strrpos($displayname, '.');
 if ($extn !== false) {
     $displayname = substr($displayname, 0, $extn);
@@ -61,52 +62,65 @@ if (!is_uploaded_file($filesrc)) {
     dnd_send_error(DND_ERROR_INVALID_FILE, 'File not successfully uploaded');
 }
 
+if ($filesize > get_max_upload_file_size($CFG->maxbytes, $COURSE->maxbytes)) {
+    dnd_send_error(DND_ERROR_FILE_TOO_BIG, 'File size too big');
+}
+
+// Create the relevant file
+$destarea = $CFG->dataroot.'/'.$course->id.'/dndupload';
+check_dir_exists($destarea, true, true);
+if (file_exists($destarea.'/'.$filename)) {
+    $extension = '';
+    $extn = strrpos($filename, '.');
+    if ($extn !== false) {
+        $extension = substr($filename, $extn);
+        $filename = substr($filename, 0, $extn);
+    }
+    $i = 1;
+    while (file_exists($destarea.'/'.$filename.'_'.$i.$extension)) {
+        $i++;
+    }
+    $filename = $filename.'_'.$i.$extension;
+}
+$destfile = $destarea.'/'.$filename;
+
+if (!move_uploaded_file($filesrc, $destfile)) {
+    dnd_send_error(DND_ERROR_INVALID_FILE, 'File not successfully uploaded');
+}
+
 // Set up all the data for the resource
 $cw = get_course_section($section, $course->id);
 
 $data = new stdClass;
 $data->course = $course->id;
 $data->section = $section;
-$data->module = $DB->get_field('modules', 'id', array('name'=>'resource'));
+$data->module = get_field('modules', 'id', 'name', 'resource');
 $data->modulename = 'resource';
 $data->instance = 0;
 $data->name = $displayname;
-$data->intro = '<p>'.$displayname.'</p>';
-$data->introformat = FORMAT_HTML;
 $data->visible = $cw->visible;
 $data->groupmode = $course->groupmode;
 $data->groupingid = $course->defaultgroupingid;
 $data->groupmembersonly = 0;
 $data->id = '';
 $data->files = false;
+$data->type = 'file';
+$data->windowpopup = false;
+$data->reference = 'dndupload/'.$filename;
 
 // Create the course module
 $data->coursemodule = add_course_module($data);
 
-// Create the relevant file
-$fs = get_file_storage();
-$cmcontext = get_context_instance(CONTEXT_MODULE, $data->coursemodule);
-$fileinfo = array(
-                  'contextid' => $cmcontext->id,
-                  'component' => 'mod_resource',
-                  'filearea' => 'content',
-                  'itemid' => 0,
-                  'filepath' => '/',
-                  'filename' => $filename
-                  );
-$fs->create_file_from_pathname($fileinfo, $filesrc);
-
 // Create the resouce database entry
 unset($data->id);
-$data->display = RESOURCELIB_DISPLAY_AUTO;
 $data->instance = resource_add_instance($data, $data);
 
 // Update the 'instance' field for the course module
-$DB->set_field('course_modules', 'instance', $data->instance, array('id'=>$data->coursemodule));
+set_field('course_modules', 'instance', $data->instance, 'id', $data->coursemodule);
 
 // Add the resource to the correct section
 $sectionid = add_mod_to_section($data);
-$DB->set_field('course_modules', 'section', $sectionid, array('id'=>$data->coursemodule));
+set_field('course_modules', 'section', $sectionid, 'id', $data->coursemodule);
 
 set_coursemodule_visible($data->coursemodule, $data->visible);
 
@@ -128,11 +142,18 @@ add_to_log($course->id, 'resource', "add",
 
 rebuild_course_cache($course->id);
 
+$icon = mimeinfo('icon', $data->reference);
+if ($icon == 'unknown.gif') {
+    $icon = '/f/web.gif';
+} else {
+    $icon = "/f/$icon";
+}
+
 $resp = new stdClass;
 $resp->error = 0;
-$resp->icon = $OUTPUT->pix_url(file_extension_icon($filename)).'';
+$resp->icon = $CFG->pixpath.$icon;
 $resp->filename = $displayname;
-$resp->link = new moodle_url('/mod/resource/view.php', array('id'=>$data->coursemodule)).'';
+$resp->link = $CFG->wwwroot.'/mod/resource/view.php?id='.$data->coursemodule.'';
 $resp->elementid = 'module-'.$data->coursemodule;
 
 $data->id = $data->coursemodule;

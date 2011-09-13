@@ -19,6 +19,7 @@
 class block_dndupload extends block_base {
     function init() {
         $this->title = get_string('pluginname', 'block_dndupload');
+        $this->version = 2011072200;
     }
 
     function applicable_formats() {
@@ -30,13 +31,13 @@ class block_dndupload extends block_base {
     }
 
     function get_content() {
-        global $PAGE, $CFG, $OUTPUT, $COURSE;
+        global $CFG, $COURSE, $USER;
 
         if ($this->content !== NULL) {
             return $this->content;
         }
 
-        if (!$PAGE->user_is_editing()) {
+        if (!isediting()) {
             return NULL;
         }
 
@@ -44,26 +45,35 @@ class block_dndupload extends block_base {
         $this->content->footer = null;
         $this->content->text = '<div id="dndupload-status"><noscript>'.get_string('noscript', 'block_dndupload').'</noscript></div>';
 
+        /*
         $jsmodule = array(
                           'name' => 'block_dndupload',
-                          'fullpath' => new moodle_url('/blocks/dndupload/dndupload.js'),
-                          'strings' => array(
-                                             array('addhere', 'block_dndupload'),
-                                             array('dndworking', 'block_dndupload'),
-                                             array('filetoolarge', 'block_dndupload'),
-                                             array('nofilereader', 'block_dndupload'),
-                                             array('noajax', 'block_dndupload')
-                                             )
+                          );
+        $PAGE->requires->js_init_call('M.blocks_dndupload.init', $vars, true, $jsmodule);
+        */
+
+        $strings = array(
+                           array('addhere', 'block_dndupload'),
+                           array('dndworking', 'block_dndupload'),
+                           array('filetoolarge', 'block_dndupload'),
+                           array('nofilereader', 'block_dndupload'),
+                           array('noajax', 'block_dndupload')
                           );
         $vars = array(
                       sesskey(),
                       $CFG->wwwroot.'/blocks/dndupload',
                       $COURSE->id,
-                      $OUTPUT->pix_url('i/ajaxloader').'',
+                      $CFG->pixpath.'/i/ajaxloader.gif',
                       get_max_upload_file_size($CFG->maxbytes, $COURSE->maxbytes),
-                      $OUTPUT->pix_url('t/addfile').'',
+                      $CFG->wwwroot.'/blocks/dndupload/pix/addfile.png',
                       );
-        $PAGE->requires->js_init_call('M.blocks_dndupload.init', $vars, true, $jsmodule);
+        require_js($CFG->wwwroot.'/blocks/dndupload/dndupload.js');
+        $this->content->text .= "\n<script type='text/javascript'>\n";
+        foreach ($strings as $string) {
+            $this->content->text .= 'blocks_dndupload.init_string("'.$string[0].'", "'.get_string($string[0], $string[1])."\");\n";
+        }
+        $this->content->text .= 'window.onload = function() { blocks_dndupload.init("'.implode('", "', $vars)."\"); }\n";
+        $this->content->text .= "</script>\n";
 
         return $this->content;
     }
