@@ -7,6 +7,7 @@ M.blocks_dndupload = {
     addimg: null,
     entercount: 0, // Nasty hack to distinguish between dragenter(first entry), dragenter+dragleave(moving between child elements) and dragleave (leaving element)
     currentsection: null,
+    realtype: null,
 
     init: function(Y, sesskey, serverurl, courseid, loadingimg, maxsize, addimg) {
 	if (!this.hasRequiredFunctionality()) {
@@ -78,14 +79,42 @@ M.blocks_dndupload = {
 	return el;
     },
 
-    draghasfiles: function(e) {
-	for (var i=0; i<e.dataTransfer.types.length; i++) {
-	    if (e.dataTransfer.types[i] == 'Files') {
+    typesincludes: function(e, type) {
+	var i;
+	for (i=0; i<e.dataTransfer.types.length; i++) {
+	    if (e.dataTransfer.types[i] == type) {
 		return true;
 	    }
 	}
-
 	return false;
+    },
+
+    dragtype: function(e) {
+	if (this.typesincludes(e, 'url')) {
+	    this.realtype = 'url';
+	    return 'url';
+	}
+	if (this.typesincludes(e, 'text/uri-list')) {
+	    this.realtype = 'text/uri-list';
+	    return 'url';
+	}
+	if (this.typesincludes(e, 'text/html')) {
+	    this.realtype = 'text/html';
+	    return 'text/html';
+	}
+	if (this.typesincludes(e, 'text')) {
+	    this.realtype = 'text';
+	    return 'text';
+	}
+	if (this.typesincludes(e, 'text/plain')) {
+	    this.realtype = 'text/plain';
+	    return 'text';
+	}
+	if (this.typesincludes(e, 'Files')) {
+	    this.realtype = 'Files';
+	    return 'Files';
+	}
+	return false; // No types we can handle
     },
 
     dragenter: function(e) {
@@ -105,8 +134,9 @@ M.blocks_dndupload = {
 	    }
 	}
 
-	if (this.draghasfiles(e)) {
-	    this.showpreviewelement(section);
+	var type = this.dragtype(e);
+	if (type) {
+	    this.showpreviewelement(section, type);
 	}
 	return false;
     },
@@ -138,7 +168,8 @@ M.blocks_dndupload = {
 
 	this.hidepreviewelement();
 
-	if (!this.draghasfiles(e)) {
+	var type = this.dragtype(e);
+	if (!type) {
 	    return false;
 	}
 
@@ -149,9 +180,23 @@ M.blocks_dndupload = {
 	}
 	var sectionnumber = parseInt(sectionid[1]);
 
-	var files = e.dataTransfer.files;
-	for (var i=0, f; f=files[i]; i++) {
-	    this.uploadfile(f, section, sectionnumber);
+	if (type == 'Files') {
+	    var files = e.dataTransfer.files;
+	    for (var i=0, f; f=files[i]; i++) {
+		this.uploadfile(f, section, sectionnumber);
+	    }
+	} else {
+	    var contents = e.dataTransfer.getData(this.realtype);
+	    if (contents) {
+		var message = M.util.get_string('nameforwebpage', 'block_dndupload');
+		if (type == 'url') {
+		    message = M.util.get_string('nameforlink', 'block_dndupload');
+		}
+		var name = prompt(message);
+		if (name) {
+		    this.uploaditem(name, type, contents, section, sectionnumber);
+		}
+	    }
 	}
 
 	return false;
@@ -180,7 +225,7 @@ M.blocks_dndupload = {
 	return modsel;
     },
 
-    addresourceelement: function(file, section) {
+    addresourceelement: function(name, section) {
 	var modsel = this.getmodselement(section);
 
 	var resel = {
@@ -210,7 +255,7 @@ M.blocks_dndupload = {
 	resel.a.appendChild(document.createTextNode(' '));
 
 	resel.namespan.className = 'instancename';
-	resel.namespan.innerHTML = file.name;
+	resel.namespan.innerHTML = name;
 	resel.a.appendChild(resel.namespan);
 
 	resel.div.appendChild(document.createTextNode(' '));
@@ -237,12 +282,25 @@ M.blocks_dndupload = {
 	}
     },
 
-    showpreviewelement: function(section) {
+    showpreviewelement: function(section, type) {
 	this.hidepreviewelement();
 	var lis = section.getElementsByTagName('li');
 	for (var i=0; i<lis.length; i++) {
 	    if (lis[i].className.search('dndupload-preview') >= 0) {
 		lis[i].className = lis[i].className.replace(' dndupload-hidden', '');
+		var namespan = lis[i].getElementsByTagName('span')[0];
+		switch (type) {
+		case 'Files':
+		    namespan.firstChild.nodeValue = M.util.get_string('addhere', 'block_dndupload');
+		    break;
+		case 'url':
+		    namespan.firstChild.nodeValue = M.util.get_string('addlinkhere', 'block_dndupload');
+		    break;
+		case 'text':
+		case 'text/html':
+		    namespan.firstChild.nodeValue = M.util.get_string('addwebpagehere', 'block_dndupload');
+		    break;
+		}
 		return;
 	    }
 	}
@@ -301,7 +359,7 @@ M.blocks_dndupload = {
 	}
 
 	// Add the file to the display
-	var resel = this.addresourceelement(file, section);
+	var resel = this.addresourceelement(file.name, section);
 
 	// Wait for the file to finish sending to the server
 	xhr.addEventListener('load', function(e) {
@@ -323,7 +381,7 @@ M.blocks_dndupload = {
 			if (result.error == 0) {
 			    resel.icon.src = result.icon;
 			    resel.a.href = result.link;
-			    resel.namespan.innerHTML = result.filename;
+			    resel.namespan.innerHTML = result.name;
 			    resel.div.removeChild(resel.progressouter);
 			    resel.li.id = result.elementid;
 			    resel.div.innerHTML += result.commands;
@@ -342,6 +400,48 @@ M.blocks_dndupload = {
 	formData.append('sesskey', this.sesskey);
 	formData.append('course', this.courseid);
 	formData.append('section', sectionnumber);
+	formData.append('type', 'Files');
+
+	xhr.open("POST", this.serverurl+"/upload.php", true);
+	xhr.send(formData);
+    },
+
+    uploaditem: function(name, type, contents, section, sectionnumber) {
+	var xhr = new XMLHttpRequest();
+	var self = this;
+
+	// Add the item to the display
+	var resel = this.addresourceelement(name, section);
+
+	xhr.onreadystatechange = function() {
+	    if (xhr.readyState == 4) {
+		if (xhr.status == 200) {
+		    var result = JSON.parse(xhr.responseText);
+		    if (result) {
+			if (result.error == 0) {
+			    resel.icon.src = result.icon;
+			    resel.a.href = result.link;
+			    resel.namespan.innerHTML = result.name;
+			    resel.div.removeChild(resel.progressouter);
+			    resel.li.id = result.elementid;
+			    resel.div.innerHTML += result.commands;
+			    self.addediting(result.elementid, sectionnumber);
+			} else {
+			    resel.parent.removeChild(resel.li);
+			    alert(result.error+': '+result.errormessage);
+			}
+		    }
+		}
+	    }
+	};
+
+	var formData = new FormData();
+	formData.append('contents', contents);
+	formData.append('displayname', name);
+	formData.append('sesskey', this.sesskey);
+	formData.append('course', this.courseid);
+	formData.append('section', sectionnumber);
+	formData.append('type', type);
 
 	xhr.open("POST", this.serverurl+"/upload.php", true);
 	xhr.send(formData);

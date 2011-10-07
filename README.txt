@@ -18,11 +18,14 @@ It has only been tested with the 'Topic' course format.
 6. Turn editing on (in the usual way) - the block does not show if editing is off
 7. Select a few files from your desktop and drag them onto a course section
 
+You can now also drag a website address from a web browser window, to create a link; or some text selected in another application, to create a 'page' resource.
+
 ==Known issues==
 
 * Does not work in all browsers (IE, older FF/Chrome)
 * No easy way to delete all the files, if you accidentally upload too many files (you have to delete them one-by-one)
 * Moving resources that you have just uploaded around has slight sorting issues with other files you have just uploaded (if it is a problem, refresh the page)
+* Chrome seems to work fine with links/text from a range of sources. Firefox (version 7.0.1, tested on Ubuntu), seems fine with text from another Firefox Window, but struggles with that from other applications.
 
 ==Thanks==
 

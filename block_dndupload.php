@@ -49,8 +49,12 @@ class block_dndupload extends block_base {
                           'fullpath' => new moodle_url('/blocks/dndupload/dndupload.js'),
                           'strings' => array(
                                              array('addhere', 'block_dndupload'),
+                                             array('addlinkhere', 'block_dndupload'),
+                                             array('addwebpagehere', 'block_dndupload'),
                                              array('dndworking', 'block_dndupload'),
                                              array('filetoolarge', 'block_dndupload'),
+                                             array('nameforlink', 'block_dndupload'),
+                                             array('nameforwebpage', 'block_dndupload'),
                                              array('nofilereader', 'block_dndupload'),
                                              array('noajax', 'block_dndupload')
                                              )

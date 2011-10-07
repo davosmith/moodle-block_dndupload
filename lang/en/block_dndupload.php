@@ -16,9 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 $string['addhere'] = 'Add file(s) here';
+$string['addlinkhere'] = 'Add link here';
+$string['addwebpagehere'] = 'Add page here';
 $string['blockname'] = 'Drag and drop upload';
-$string['dndworking'] = 'Drag and drop files from your desktop onto course sections to upload them';
+$string['dndworking'] = 'Drag and drop files, text or links from your desktop onto course sections to upload them';
 $string['filetoolarge'] = 'is too large to upload';
+$string['nameforlink'] = 'What do you want to call this link?';
+$string['nameforwebpage'] = 'What do you want to call this page?';
 $string['noajax'] = 'AJAX course editing must be enabled for drag and drop upload to work';
 $string['nofilereader'] = 'Your browser does not support drag and drop upload of files';
 $string['noscript'] = 'Javascript must be enabled for drag and drop upload to work';
