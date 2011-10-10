@@ -90,6 +90,10 @@ M.blocks_dndupload = {
     },
 
     dragtype: function(e) {
+	if (this.typesincludes(e, 'Files')) {
+	    this.realtype = 'Files';
+	    return 'Files';
+	}
 	if (this.typesincludes(e, 'url')) {
 	    this.realtype = 'url';
 	    return 'url';
@@ -109,10 +113,6 @@ M.blocks_dndupload = {
 	if (this.typesincludes(e, 'text/plain')) {
 	    this.realtype = 'text/plain';
 	    return 'text';
-	}
-	if (this.typesincludes(e, 'Files')) {
-	    this.realtype = 'Files';
-	    return 'Files';
 	}
 	return false; // No types we can handle
     },
