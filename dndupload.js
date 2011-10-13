@@ -334,24 +334,13 @@ M.blocks_dndupload = {
 	modsel.appendChild(preview.li);
     },
 
-    addpostfield: function(boundary, name, value, filename, filetype) {
-	var rtn;
-	rtn = '--'+boundary+'\n';
-	rtn += 'Content-Disposition: form-data; name="'+name+'"';
-	if (filename !== undefined) {
-	    rtn += '; filename="'+filename+'"\n';
-	    rtn += 'Content-Type: '+filetype+'"\n';
-	    rtn += 'Content-Transfer-Encoding: base64';
-	}
-	rtn += '\n\n';
-	rtn += value+'\n';
-
-	return rtn;
-    },
-
     uploadfile: function(file, section, sectionnumber) {
 	var xhr = new XMLHttpRequest();
 	var self = this;
+
+        if (file.name == '.ds_store') {
+            return;
+        }
 
 	if (file.size > this.maxsize) {
 	    alert("'"+file.name+"' "+M.util.get_string('filetoolarge', 'block_dndupload'));
