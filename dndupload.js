@@ -29,7 +29,7 @@ M.blocks_dndupload = {
         this.maxsize = maxsize;
         this.addimg = addimg;
 
-        var els = document.getElementsByTagName('li');
+        var els = document.getElementsByClassName('section');
         var self = this;
         for (var i=0; i<els.length; i++) {
             if ((els[i].className.search('section') >= 0)
@@ -217,7 +217,7 @@ M.blocks_dndupload = {
         if (!modsel) {
             var modsel = document.createElement('ul');
             modsel.className = 'section img-text';
-            var contentel = sectionel.lastChild;
+            var contentel = section.lastChild;
             var brel = contentel.lastChild;
             contentel.insertBefore(modsel, brel);
         }
