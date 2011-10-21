@@ -19,7 +19,7 @@
 class block_dndupload extends block_base {
     function init() {
         $this->title = get_string('pluginname', 'block_dndupload');
-        $this->version = 2011072200;
+        $this->version = 2011102100;
     }
 
     function applicable_formats() {
