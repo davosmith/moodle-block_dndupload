@@ -187,7 +187,7 @@ blocks_dndupload = {
 	if (!modsel) {
 	    var modsel = document.createElement('ul');
 	    modsel.className = 'section img-text';
-	    var contentel = sectionel.lastChild;
+	    var contentel = section.lastChild;
 	    var brel = contentel.lastChild;
 	    contentel.insertBefore(modsel, brel);
 	}
