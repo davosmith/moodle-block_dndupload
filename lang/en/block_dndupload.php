@@ -25,5 +25,6 @@ $string['nameforlink'] = 'What do you want to call this link?';
 $string['nameforwebpage'] = 'What do you want to call this page?';
 $string['noajax'] = 'AJAX course editing must be enabled for drag and drop upload to work';
 $string['nofilereader'] = 'Your browser does not support drag and drop upload of files';
+$string['nopermission'] = 'You do not have permission to add files to this course';
 $string['noscript'] = 'Javascript must be enabled for drag and drop upload to work';
 $string['pluginname'] = 'Drag and drop upload';

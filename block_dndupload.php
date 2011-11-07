@@ -44,6 +44,12 @@ class block_dndupload extends block_base {
         $this->content->footer = null;
         $this->content->text = '<div id="dndupload-status"><noscript>'.get_string('noscript', 'block_dndupload').'</noscript></div>';
 
+        $context = get_context_instance(CONTEXT_COURSE, $COURSE->id);
+        if (!has_capability('moodle/course:managefiles', $context)) {
+            $this->content->text =  '<div id="dndupload-status">'.get_string('nopermission', 'block_dndupload').'</div>';
+            return $this->content;
+        }
+
         $jsmodule = array(
                           'name' => 'block_dndupload',
                           'fullpath' => new moodle_url('/blocks/dndupload/dndupload.js'),
