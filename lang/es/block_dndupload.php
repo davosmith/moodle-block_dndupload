@@ -26,9 +26,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['addhere'] = 'Añadir archivo(s) aquí';
+$string['addlinkhere'] = 'Añadir liga aquí';
+$string['addwebpagehere'] = 'Añadir página aquí';
 $string['blockname'] = 'Arrastrar y depositar archivos';
-$string['dndworking'] = 'Arrastre y deposite archivos desde el escritorio hasta secciones del curso para SUBIR ARCHIVOS a MOODLE';
+$string['dndworking'] = 'Arrastre y deposite archivos, texto o ligas desde su escritorio hasta secciones del curso para subirlos a Moodle';
 $string['filetoolarge'] = 'es demasiado grande para cargarlo';
+$string['nameforlink'] = '¿Cómo quieres llamar a esta liga?';
+$string['nameforwebpage'] = '¿Cómo quieres llamar a esta página?';
 $string['noajax'] = 'Debe habilitarse la edicion de cursos con AJAX para que funcione "Arrastrar y depositar" para subir archivos';
 $string['nofilereader'] = 'Su navegador no soporta la subida de archivos mediante arrastrar y depositar';
 $string['noscript'] = 'Debe habilitarse Javascript para que funcione "Arrastrar y depositar" para subir archivos';
