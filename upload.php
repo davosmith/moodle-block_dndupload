@@ -112,7 +112,9 @@ $data->files = false;
 $data->coursemodule = add_course_module($data);
 
 unset($data->id);
-$data->display = RESOURCELIB_DISPLAY_AUTO;
+
+// use default display setting for resources
+$data->display = get_config('resource', 'display'); 
 
 if ($type == 'Files') {
     // Create the relevant file
