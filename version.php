@@ -15,5 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-$plugin->version = 2011110700;
+defined('MOODLE_INTERNAL') || die();
 
+$plugin->version   = 2011121500;
+$plugin->requires  = 2010112400;
+$plugin->cron      = 0;
+$plugin->component = 'block_dndupload';
+$plugin->maturity  = MATURITY_STABLE;
+$plugin->release   = '2.x (Build: 2011121500)';

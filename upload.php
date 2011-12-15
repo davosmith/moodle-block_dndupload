@@ -112,7 +112,11 @@ $data->files = false;
 $data->coursemodule = add_course_module($data);
 
 unset($data->id);
-$data->display = RESOURCELIB_DISPLAY_AUTO;
+
+$data->display = get_config('resource', 'display');
+if ($data->display === false) {
+    $data->display = RESOURCELIB_DISPLAY_AUTO;
+}
 
 if ($type == 'Files') {
     // Create the relevant file
