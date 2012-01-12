@@ -27,6 +27,10 @@ You can now also drag a website address from a web browser window, to create a l
 * Moving resources that you have just uploaded around has slight sorting issues with other files you have just uploaded (if it is a problem, refresh the page)
 * Chrome seems to work fine with links/text from a range of sources. Firefox (version 7.0.1, tested on Ubuntu), seems fine with text from another Firefox Window, but struggles with that from other applications.
 
+==Changes==
+
+2012-01-12 - Now saves 'userid' in file database entry, so uploaded files appear in 'recent files' in file picker.
+
 ==Thanks==
 
 Thanks to the following websites, that were invaluable in the creation of this block:
