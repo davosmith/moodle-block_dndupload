@@ -17,9 +17,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2011121500;
+$plugin->version   = 2012011200;
 $plugin->requires  = 2010112400;
 $plugin->cron      = 0;
 $plugin->component = 'block_dndupload';
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '2.x (Build: 2011121500)';
+$plugin->release   = '2.x (Build: 2012011200)';
