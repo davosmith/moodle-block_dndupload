@@ -128,7 +128,8 @@ if ($type == 'Files') {
                       'filearea' => 'content',
                       'itemid' => 0,
                       'filepath' => '/',
-                      'filename' => $filename
+                      'filename' => $filename,
+                      'userid' => $USER->id
                       );
     $fs->create_file_from_pathname($fileinfo, $filesrc);
 
