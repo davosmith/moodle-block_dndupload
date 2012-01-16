@@ -29,6 +29,7 @@ You can now also drag a website address from a web browser window, to create a l
 
 ==Changes==
 
+2012-01-16 - Finish/Danish translations from Paul Nijbakker
 2012-01-12 - Now saves 'userid' in file database entry, so uploaded files appear in 'recent files' in file picker (thanks to Steve Miley)
 
 ==Thanks==
