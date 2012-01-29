@@ -108,6 +108,11 @@ $data->groupmembersonly = 0;
 $data->id = '';
 $data->files = false;
 
+$data->printheading = false; // Added to avoid any warnings due to not setting them
+$data->printintro = false;
+$data->popupwidth = 620;  // Default values from mod/resource/lib.php
+$data->popupheight = 450;
+
 // Create the course module
 $data->coursemodule = add_course_module($data);
 
