@@ -143,7 +143,9 @@ if ($type == 'Files') {
                       'itemid' => 0,
                       'filepath' => '/',
                       'filename' => $filename,
-                      'userid' => $USER->id
+                      'userid' => $USER->id,
+                      'license' => $CFG->sitedefaultlicense,
+                      'author' => fullname($USER)
                       );
     $fs->create_file_from_pathname($fileinfo, $filesrc);
 
