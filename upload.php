@@ -1,7 +1,11 @@
 <?php
 
+// turn off debugging statements, because they mess up the json response
+define('NO_DEBUG_DISPLAY', 1);
+
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once($CFG->libdir.'/resourcelib.php');
+require_once($CFG->libdir.'/uploadlib.php');    // for upload_manager
 require_once($CFG->dirroot.'/mod/resource/lib.php');
 require_once($CFG->dirroot.'/mod/resource/locallib.php');
 require_once($CFG->dirroot.'/mod/url/lib.php');
@@ -49,14 +53,22 @@ if (!confirm_sesskey()) {
 
 $display = false;
 if ($type == 'Files') {
-    // Extract the file data
-    if (!array_key_exists('uploadfile', $_FILES)) {
-        dnd_send_error(DND_ERROR_NO_FILES, 'No files included');
+    // use upload_manager to validate file, do virus scan, and cleanfilename
+    $upload_manager = new upload_manager('uploadfile', false, false, $course,
+            false, 0, true);
+    if (!$upload_manager->preprocess_files()) {
+        // return message in $upload_manager->notify to provide a more detail,
+        // but it has some html tags in it that wouldn't display in the 
+        // response back, so remove it
+        dnd_send_error(DND_ERROR_INVALID_FILE, 
+                strip_tags($upload_manager->notify));
     }
-    $filedetails = $_FILES['uploadfile'];
-
-    $filename = $filedetails['name'][0];
-    $filesrc = $filedetails['tmp_name'][0];
+    
+    // if preprocess_files passed, then file is clean and ready to be used
+    $filedetails = $upload_manager->files['uploadfile'];
+    
+    $filename = $filedetails['name'];
+    $filesrc = $filedetails['tmp_name'];
 
     $displayname = $filename;
     $extn = strrpos($displayname, '.');
@@ -65,9 +77,6 @@ if ($type == 'Files') {
     }
     $displayname = str_replace('_', ' ', $displayname);
 
-    if (!is_uploaded_file($filesrc)) {
-        dnd_send_error(DND_ERROR_INVALID_FILE, 'File not successfully uploaded');
-    }
     $icon = $OUTPUT->pix_url(file_extension_icon($filename)).'';
     $modulename = 'resource';
 
@@ -143,7 +152,9 @@ if ($type == 'Files') {
                       'itemid' => 0,
                       'filepath' => '/',
                       'filename' => $filename,
-                      'userid' => $USER->id
+                      'userid' => $USER->id,
+                      'license' => $CFG->sitedefaultlicense,
+                      'author' => fullname($USER)
                       );
     $fs->create_file_from_pathname($fileinfo, $filesrc);
 
