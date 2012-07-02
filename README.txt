@@ -1,5 +1,7 @@
 ==Drag and drop upload block==
 
+WARNING: Do NOT install this block on a Moodle 2.3 site. All the functionality of this block is now built into Moodle 2.3 as standard and using this block as well will cause problems.
+
 Once installed on a course, this block allows you to drag and drop files directly from your desktop onto a course and have them appear as resouces on that course.
 
 This block works with Moodle 1.9 and Moodle 2.x. (Although it has been more extensively tested with Moodle 2).
@@ -10,6 +12,7 @@ It has only been tested with the 'Topic' course format.
 
 ==Changes==
 
+2012-07-02 - Prevent block from installing on Moodle 2.3 site
 2012-01-29 - Fixed error when uploading files if site default resource display is 'popup'
 2012-01-16 - Finish/Danish translations from Paul Nijbakker
 2012-01-12 - Now saves 'userid' in file database entry, so uploaded files appear in 'recent files' in file picker (thanks to Steve Miley)

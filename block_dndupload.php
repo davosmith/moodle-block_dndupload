@@ -26,11 +26,18 @@ class block_dndupload extends block_base {
     }
 
     function user_can_addto($page) {
+        global $CFG;
+
+        if ($CFG->version >= 2012062500) {
+            // Block functionality is already present in Moodle 2.3.
+            return false;
+        }
+
         return true;
     }
 
     function get_content() {
-        global $PAGE, $CFG, $OUTPUT, $COURSE;
+        global $PAGE, $CFG, $OUTPUT, $COURSE, $CFG;
 
         if ($this->content !== NULL) {
             return $this->content;
@@ -38,6 +45,13 @@ class block_dndupload extends block_base {
 
         if (!$PAGE->user_is_editing()) {
             return NULL;
+        }
+
+        if ($CFG->version >= 2012062500) {
+            $this->content = new stdClass();
+            $this->content->footer = null;
+            $this->content->text = get_string('notmoodle23', 'block_dndupload');
+            return $this->content;
         }
 
         $this->content = new stdClass;
