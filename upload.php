@@ -1,5 +1,7 @@
 <?php
 
+define('AJAX_SCRIPT', 1);
+
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once($CFG->libdir.'/resourcelib.php');
 require_once($CFG->dirroot.'/mod/resource/lib.php');
@@ -106,6 +108,7 @@ $data->course = $course->id;
 $data->section = $section;
 $data->module = $DB->get_field('modules', 'id', array('name'=>$modulename));
 $data->modulename = $modulename;
+$data->modname = $data->modulename; // As make_editing_buttons requires this
 $data->instance = 0;
 $data->name = $displayname;
 $data->intro = '<p>'.$displayname.'</p>';

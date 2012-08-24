@@ -10,6 +10,7 @@ It has only been tested with the 'Topic' course format.
 
 ==Changes==
 
+2012-08-24 - Fixed Moodle 2.2.4 compatibility issue
 2012-01-29 - Fixed error when uploading files if site default resource display is 'popup'
 2012-01-16 - Finish/Danish translations from Paul Nijbakker
 2012-01-12 - Now saves 'userid' in file database entry, so uploaded files appear in 'recent files' in file picker (thanks to Steve Miley)
