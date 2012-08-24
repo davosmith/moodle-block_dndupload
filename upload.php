@@ -1,6 +1,7 @@
 <?php
 
 define('AJAX_SCRIPT', 1);
+define('NO_DEBUG_DISPLAY', 1); // Don't display 'default object from empty value' warning in uploadlib
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once($CFG->libdir.'/resourcelib.php');
