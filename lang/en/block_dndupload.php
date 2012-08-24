@@ -27,4 +27,5 @@ $string['noajax'] = 'AJAX course editing must be enabled for drag and drop uploa
 $string['nofilereader'] = 'Your browser does not support drag and drop upload of files';
 $string['nopermission'] = 'You do not have permission to add files to this course';
 $string['noscript'] = 'Javascript must be enabled for drag and drop upload to work';
+$string['notmoodle23'] = 'Your site is Moodle 2.3 (or above) which already has all the functionality of this block - ask your site admin to delete the dndupload block from your site';
 $string['pluginname'] = 'Drag and drop upload';

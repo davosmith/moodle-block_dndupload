@@ -385,7 +385,7 @@ M.blocks_dndupload = {
         };
 
         var formData = new FormData();
-        formData.append('uploadfile[]', file);
+        formData.append('uploadfile', file);
         formData.append('sesskey', this.sesskey);
         formData.append('course', this.courseid);
         formData.append('section', sectionnumber);
