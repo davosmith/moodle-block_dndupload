@@ -1,7 +1,7 @@
 <?php
 
-// turn off debugging statements, because they mess up the json response
-define('NO_DEBUG_DISPLAY', 1);
+define('AJAX_SCRIPT', 1);
+define('NO_DEBUG_DISPLAY', 1); // Don't display 'default object from empty value' warning in uploadlib
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once($CFG->libdir.'/resourcelib.php');
@@ -115,6 +115,7 @@ $data->course = $course->id;
 $data->section = $section;
 $data->module = $DB->get_field('modules', 'id', array('name'=>$modulename));
 $data->modulename = $modulename;
+$data->modname = $data->modulename; // As make_editing_buttons requires this
 $data->instance = 0;
 $data->name = $displayname;
 $data->intro = '<p>'.$displayname.'</p>';
