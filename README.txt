@@ -12,6 +12,7 @@ It has only been tested with the 'Topic' course format.
 
 ==Changes==
 
+2012-09-14 - Added Chinese translation.
 2012-08-24 - Fixed Moodle 2.2.4 compatibility issue
 2012-07-02 - Prevent block from installing on Moodle 2.3 site
 2012-01-29 - Fixed error when uploading files if site default resource display is 'popup'
