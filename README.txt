@@ -51,5 +51,5 @@ Special thanks to The University of St Andrews, for sharing some code to put som
 ==Contact==
 
 Any problems / questions please contact:
-davo@davodev.co.uk
-http://www.davodev.co.uk
+moodle@davosmith.co.uk
+
